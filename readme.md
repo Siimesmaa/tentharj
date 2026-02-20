@@ -6,6 +6,16 @@ Tämä projekti kääntää ja ajaa yksinkertaisen C-ohjelman Docker-kontissa k�
 
 - [Docker](https://www.docker.com/) asennettuna (suositellaan versiota 20.10+, joka sisältää BuildKit-tuen)
 
+## SSH-yhteys Ubuntu-virtuaalikoneeseen
+
+Kyllä, kaikki komennot toimivat normaalisti SSH-yhteyden kautta Ubuntu-virtuaalikoneessa. Jos Dockeria ei ole vielä asennettu, asenna se näin:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y docker.io docker-buildx
+sudo systemctl enable --now docker
+```
+
 ## Vianmääritys
 
 ### Docker-sockettiin ei ole oikeuksia (permission denied)
@@ -14,10 +24,14 @@ Jos saat virheen `permission denied while trying to connect to the Docker daemon
 
 ```bash
 sudo usermod -aG docker $USER
-newgrp docker
 ```
 
-Kirjaudu ulos ja takaisin sisään, jotta muutokset astuvat voimaan.
+**SSH-yhteydellä:** Kirjaudu ulos SSH-yhteydestä ja muodosta uusi yhteys, jotta ryhmämuutos astuu voimaan:
+
+```bash
+exit
+ssh <käyttäjä>@<virtuaalikoneen-ip>
+```
 
 ## Sovelluksen ajaminen Dockerilla
 
