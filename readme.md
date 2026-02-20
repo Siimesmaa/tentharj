@@ -20,17 +20,46 @@ sudo systemctl enable --now docker
 
 ### Docker-sockettiin ei ole oikeuksia (permission denied)
 
-Jos saat virheen `permission denied while trying to connect to the Docker daemon socket`, käyttäjälläsi ei ole oikeuksia käyttää Dockeria. Korjaa se lisäämällä käyttäjä `docker`-ryhmään:
+Jos saat virheen `permission denied while trying to connect to the Docker daemon socket`, toimi seuraavasti:
+
+**1. Tarkista, että Docker-daemon on käynnissä:**
+
+```bash
+sudo systemctl status docker
+```
+
+Jos daemon ei ole käynnissä, käynnistä se:
+
+```bash
+sudo systemctl start docker
+```
+
+**2. Lisää käyttäjä `docker`-ryhmään:**
 
 ```bash
 sudo usermod -aG docker $USER
 ```
 
-**SSH-yhteydellä:** Kirjaudu ulos SSH-yhteydestä ja muodosta uusi yhteys, jotta ryhmämuutos astuu voimaan:
+**3. Kirjaudu ulos ja takaisin sisään** (SSH-yhteydellä katkaistaan ja avataan uusi yhteys), jotta ryhmämuutos astuu voimaan:
 
 ```bash
 exit
 ssh <käyttäjä>@<virtuaalikoneen-ip>
+```
+
+**4. Tarkista, että ryhmämuutos on voimassa:**
+
+```bash
+groups
+```
+
+Tulosteessa pitäisi näkyä `docker`. Jos ei näy, käynnistä virtuaalikone uudelleen (`sudo reboot`) ja yhdistä uudelleen.
+
+**Vaihtoehtoisesti – nopea testi `sudo`-komennolla** (ei vaadi uudelleenkirjautumista):
+
+```bash
+sudo docker buildx build -t c-app .
+sudo docker run --rm c-app
 ```
 
 ## Sovelluksen ajaminen Dockerilla
